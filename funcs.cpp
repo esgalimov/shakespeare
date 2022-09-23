@@ -10,7 +10,6 @@ char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char *
 
     *strings = (char *) calloc(*filesize + 1, sizeof(char));
     fread(*strings, sizeof(char), *filesize, stream);
-    printf("%s", *strings);
     *(*strings + *filesize) = '\0';
 
     int cnt_string = 0;

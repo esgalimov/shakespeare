@@ -10,8 +10,8 @@ int main(void)
         return 0;
     }
 
-    char ** strings;
-    char * text;
+    char ** strings = NULL;
+    char * text = NULL;
     size_t len = 0, filesize = 0;
     strings = import_text(fp, &len, &filesize, &text);
     fclose(fp);
