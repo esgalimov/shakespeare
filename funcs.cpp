@@ -1,23 +1,23 @@
 #include "header.h"
 
-char ** import_text(FILE * stream, size_t * n_strings)
+char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char ** strings)
 {
     assert(stream != NULL);
 
     fseek(stream, 0L, SEEK_END);
-    size_t filesize = 0;
-    filesize = (size_t) ftell(stream);
+    *filesize = (size_t) ftell(stream);
     rewind(stream);
 
-    char * strings = (char *) calloc(filesize + 1, sizeof(char));
-    fread(strings, sizeof(char), filesize, stream);
-    strings[filesize] = '\0';
+    *strings = (char *) calloc(*filesize + 1, sizeof(char));
+    fread(*strings, sizeof(char), *filesize, stream);
+    printf("%s", *strings);
+    *(*strings + *filesize) = '\0';
 
     int cnt_string = 0;
-    cnt_string = count_symbol('\n', strings, filesize);
+    cnt_string = count_symbol('\n', *strings, *filesize);
     *n_strings = (size_t) cnt_string;
 
-    return get_ptrs(strings, cnt_string, filesize);
+    return get_ptrs(*strings, cnt_string, *filesize);
 
 }
 
@@ -55,13 +55,9 @@ char ** get_ptrs(char * strings, int n_strings, size_t filesize)
             {
                 strings[i] = '\0';
                 strptr[index] = &strings[i + 1];
-                printf("String %d: %s\n", index - 1, strptr[index - 1]);
                 index++;
             }
         }
-    printf("String %d: %s\n", index - 1, strptr[index - 1]);
-    printf("String %d: %s\n", index, strptr[index]);
-    printf("is last \\0: %d\n", strptr[index - 1][8] == '\0');
     strptr[index] = NULL;
 
     return strptr;
@@ -141,7 +137,7 @@ int is_without_text(const char * str)
 {
     assert(str != NULL);
     int flag = 1;
-    int len = strlen(str);
+    int len = (int) strlen(str);
     for (int i = 0; i < len; i++)
         if (!isblank(str[i]))
         {

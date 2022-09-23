@@ -8,7 +8,7 @@
 #include <ctype.h>
 
 
-char ** import_text(FILE * stream, size_t * n_strings);
+char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char ** strings);
 int count_symbol(char ch, char * string, size_t filesize);
 void bubble_sort(char * arr[], int len);
 char ** get_ptrs(char * strings, int n_strings, size_t filesize);

@@ -11,8 +11,9 @@ int main(void)
     }
 
     char ** strings;
-    size_t len = 0;
-    strings = import_text(fp, &len);
+    char * text;
+    size_t len = 0, filesize = 0;
+    strings = import_text(fp, &len, &filesize, &text);
     fclose(fp);
 
     fp = fopen("./output.txt", "w");
@@ -22,25 +23,29 @@ int main(void)
         return 0;
     }
 
-    //printf("%d", is_without_text(strings[2]));
-
     my_bubble_sort(strings, len, sizeof(strings[0]), str_start_cmp);
 
     fputs("START ALPHABET SORTING: \n\n", fp);
     write_into_file(strings, fp);
-    fputs("<----------------------------------------------------->", fp);
+    fputs("<----------------------------------------------------->\n\n", fp);
 
 
     my_bubble_sort(strings, len, sizeof(strings[0]), str_end_cmp);
 
     fputs("END ALPHABET SORTING: \n\n", fp);
     write_into_file(strings, fp);
-    fputs("<----------------------------------------------------->", fp);
+    fputs("<----------------------------------------------------->\n\n", fp);
 
     fputs("NORMAL TEXT: \n\n", fp);
+    for (int i = 0; i < (int) filesize; i++)
+        if (text[i] == '\0')
+            text[i] = '\n';
+    fputs(text, fp);
+
 
 
     fclose(fp);
     free(strings);
+    free(text);
     return 0;
 }
