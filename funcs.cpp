@@ -136,3 +136,38 @@ void my_bubble_sort(void * data, size_t n_strings, size_t elem_size,
                 *((char**)(data) + j) = change;
             }
 }
+
+int is_without_text(const char * str)
+{
+    assert(str != NULL);
+    int flag = 1;
+    int len = strlen(str);
+    for (int i = 0; i < len; i++)
+        if (!isblank(str[i]))
+        {
+            flag = 0;
+            break;
+        }
+    return flag;
+}
+
+void write_into_file(char ** strings, FILE * stream)
+{
+    assert(strings != NULL);
+    assert(stream != NULL);
+
+    int i = 0;
+    while (strings[i] != NULL)
+    {
+        if (is_without_text(strings[i]))
+        {
+            i++;
+            continue;
+        }
+        else
+        {
+            fputs(strings[i++], stream);
+            fputs("\n", stream);
+        }
+    }
+}

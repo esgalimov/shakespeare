@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <ctype.h>
 
+
 char ** import_text(FILE * stream, size_t * n_strings);
 int count_symbol(char ch, char * string, size_t filesize);
 void bubble_sort(char * arr[], int len);
@@ -15,6 +16,8 @@ int str_start_cmp(const void * s1, const void * s2);
 int str_end_cmp(const void * s1, const void * s2);
 void my_bubble_sort(void * strings, size_t n_strings, size_t elem_size,
              int(*comp_func)(const void * a, const void * b));
+int is_without_text(const char * str);
+void write_into_file(char ** strings, FILE * stream);
 
 
 #endif
