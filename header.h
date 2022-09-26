@@ -7,18 +7,31 @@
 #include <assert.h>
 #include <ctype.h>
 
+//! @brief Struct that consist of variables for text processing
+//!
+//! @var strings - pointer to array with pointers to strings
+//! @var buffer - pointer to buffer for text
+//! @var len - number of strings
+//! @var filesize - size of buffer in bytes
+
+struct Text
+{
+    char ** strings;
+    char * buffer;
+    size_t len;
+    size_t filesize;
+};
+
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc
 //!
+//! @param [out] book - pointer to struct with variables for text processing
 //! @param [in] stream - pointer to the file with text
-//! @param [out] n_strings - pointer to number of strings
-//! @param [out] filesize - pointer to size of file in bytes
-//! @param [out] strings - pointer to buffer for text
 //!
 //! @return Pointer to array with pointers to string
 //! @note Function use get_ptrs to make array with pointers to strings
 
-char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char ** strings);
+char ** import_text(struct Text * book, FILE * stream);
 
 //! @brief Function for counting number of particular symbol
 //!
@@ -28,7 +41,7 @@ char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char *
 //!
 //! @return Number of symbol ch
 
-int count_symbol(char ch, char * string, size_t filesize);
+size_t count_symbol(char ch, char * string, size_t filesize);
 
 //! @brief Function that swap "\n" to "\0" in buffer and make array of pointers to strings in buffer
 //!
@@ -37,7 +50,7 @@ int count_symbol(char ch, char * string, size_t filesize);
 //! @param [in] filesize - size of file in bytes
 //!
 //! @return pointer to array with pointers to stings
-char ** get_ptrs(char * strings, int n_strings, size_t filesize);
+char ** get_ptrs(char * strings, size_t n_strings, size_t filesize);
 
 //! @brief Comparator for alphabet sorting
 //!
@@ -76,6 +89,20 @@ int is_without_text(const char * str);
 //! @param [in] stream - pointer to file for writing
 
 void write_into_file(char ** strings, FILE * stream);
+
+//! @brief Constructor for Text
+//!
+//! @param [out] book - pointer to struct with variables for text processing
+//! @param [in] stream - pointer to file with text
+//!
+//! @note Initialize struct fields, use import_text, close file stream
+
+void construct(struct Text * book, FILE * strem);
+
+//! @brief Destruct for Text
+//! @param [out] book - pointer to struct with variables for text processing
+
+void destruct(struct Text * book);
 
 
 #endif

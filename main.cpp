@@ -10,11 +10,8 @@ int main(void)
         return 0;
     }
 
-    char ** strings = NULL;
-    char * text = NULL;
-    size_t len = 0, filesize = 0;
-    strings = import_text(fp, &len, &filesize, &text);
-    fclose(fp);
+    struct Text my_text;
+    construct(&my_text, fp);
 
     fp = fopen("./output.txt", "w");
     if (fp == NULL)
@@ -23,29 +20,28 @@ int main(void)
         return 0;
     }
 
-    my_bubble_sort(strings, len, sizeof(strings[0]), str_start_cmp);
+    my_bubble_sort(my_text.strings, my_text.len, sizeof(my_text.strings[0]), str_start_cmp);
 
     fputs("START ALPHABET SORTING: \n\n", fp);
-    write_into_file(strings, fp);
+    write_into_file(my_text.strings, fp);
     fputs("<----------------------------------------------------->\n\n", fp);
 
 
-    my_bubble_sort(strings, len, sizeof(strings[0]), str_end_cmp);
+    my_bubble_sort(my_text.strings, my_text.len, sizeof(my_text.strings[0]), str_end_cmp);
 
     fputs("END ALPHABET SORTING: \n\n", fp);
-    write_into_file(strings, fp);
+    write_into_file(my_text.strings, fp);
     fputs("<----------------------------------------------------->\n\n", fp);
 
     fputs("NORMAL TEXT: \n\n", fp);
-    for (int i = 0; i < (int) filesize; i++)
-        if (text[i] == '\0')
-            text[i] = '\n';
-    fputs(text, fp);
-
-
+    for (int i = 0; i < (int) my_text.filesize; i++)
+        if (my_text.buffer[i] == '\0')
+            my_text.buffer[i] = '\n';
+    fputs(my_text.buffer, fp);
 
     fclose(fp);
-    free(strings);
-    free(text);
+
+    destruct(&my_text);
+
     return 0;
 }

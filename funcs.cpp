@@ -1,43 +1,38 @@
 #include "header.h"
 
-char ** import_text(FILE * stream, size_t * n_strings, size_t * filesize, char ** strings)
+char ** import_text(struct Text * book, FILE * stream)
 {
     assert(stream != NULL);
+    assert(book != NULL);
 
     fseek(stream, 0L, SEEK_END);
-    *filesize = (size_t) ftell(stream);
+    book->filesize = (size_t) ftell(stream);
     rewind(stream);
 
-    *strings = (char *) calloc(*filesize + 1, sizeof(char));
-    fread(*strings, sizeof(char), *filesize, stream);
-    *(*strings + *filesize) = '\0';
+    book->buffer = (char *) calloc(book->filesize + 1, sizeof(char));
+    fread(book->buffer, sizeof(char), book->filesize, stream);
+    *(book->buffer + book->filesize) = '\0';
 
-    int cnt_string = 0;
-    cnt_string = count_symbol('\n', *strings, *filesize);
-    *n_strings = (size_t) cnt_string;
+    book->len = count_symbol('\n', book->buffer, book->filesize);
 
-    return get_ptrs(*strings, cnt_string, *filesize);
+    return get_ptrs(book->buffer, book->len, book->filesize);
 
 }
 
 
-int count_symbol(char ch, char * string, size_t filesize)
+size_t count_symbol(char ch, char * string, size_t filesize)
 {
     assert(string != NULL);
 
     int cnt_strings = 0;
     for (size_t i = 0; i < filesize; i++)
-    {
         if (string[i] == ch)
-        {
             cnt_strings++;
-        }
-    }
     return cnt_strings;
 }
 
 
-char ** get_ptrs(char * strings, int n_strings, size_t filesize)
+char ** get_ptrs(char * strings, size_t n_strings, size_t filesize)
 {
     assert(strings != NULL);
     char ** strptr = (char **) calloc((size_t) (n_strings + 1), sizeof(char *));
@@ -46,7 +41,7 @@ char ** get_ptrs(char * strings, int n_strings, size_t filesize)
         return NULL;
 
     strptr[0] = &strings[0];
-    int index = 1;
+    size_t index = 1;
     for (size_t i = 1; i < filesize; i++)
         if (strings[i] == '\n')
         {
@@ -165,4 +160,30 @@ void write_into_file(char ** strings, FILE * stream)
             fputs("\n", stream);
         }
     }
+}
+
+void construct(struct Text * book, FILE * stream)
+{
+    assert(book != NULL);
+    assert(stream != NULL);
+
+    book->strings = NULL;
+    book->buffer = NULL;
+    book->len = 0;
+    book->filesize = 0;
+
+    book->strings = import_text(book, stream);
+    fclose(stream);
+}
+
+void destruct(struct Text * book)
+{
+    assert(book != NULL);
+
+    book->len = 0;
+    book->filesize = 0;
+    free(book->buffer);
+    free(book->strings);
+    book->strings = NULL;
+    book->buffer = NULL;
 }
